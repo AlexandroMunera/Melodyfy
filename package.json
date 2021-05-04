@@ -3,7 +3,7 @@
   "private": true,
   "description": "Find amazing music",
   "version": "0.1.0",
-  "author": "Freud Múnera>",
+  "author": "Freud Múnera",
   "dependencies": {
     "gatsby": "^3.4.0",
     "gatsby-plugin-gatsby-cloud": "^2.4.1",

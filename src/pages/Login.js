@@ -1,12 +1,13 @@
 import React from "react"
 import Layout from "./layout"
-import { Link } from "gatsby"
+// import { Link } from "gatsby"
 import Seo from "../components/seo"
 import LoginForm from "../components/organisms/login-form/LoginForm"
-import './login.scss';
+import "./login.scss"
 
-const Login: React.FC = () => (
-  <Layout>
+const Login = () => {
+  
+  return <Layout>
     <div className="p-login">
       <Seo title="Home" />
       <h1>Hello !</h1>
@@ -20,6 +21,6 @@ const Login: React.FC = () => (
       </p> */}
     </div>
   </Layout>
-)
+}
 
 export default Login
