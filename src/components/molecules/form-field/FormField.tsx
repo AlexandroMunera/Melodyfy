@@ -1,5 +1,6 @@
 import { Label } from "../../../../src/components/atoms/label/Label"
 import { Input } from "../../../../src/components/atoms/input/Input"
+import "./formField.scss"
 
 import React from "react"
 
@@ -9,7 +10,7 @@ type props = {
 }
 
 export const FormField: React.FC<props> = ({ label, inputType }) => (
-  <div>
+  <div className="m-form-field">
     <Label>{label}</Label>
     <Input type={inputType} />
   </div>
