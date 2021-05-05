@@ -3,25 +3,29 @@ import * as React from "react"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
-import './listFavorites.scss'
+import "./listFavorites.scss"
 
 const ListFavorites = () => {
-  let spotifyApi = new SpotifyWebApi()
-
+ 
   const [albumsCards, setAlbumsCards] = React.useState([])
 
-  spotifyApi.setAccessToken(
-    "BQC2ub6WvY1z338uMRsGRYGUfXJ-JKiqIT1CeKITpZfOXcaHjCFJinhMfgaZJ958QX2KNVe6-TAHjjdVHT1XviXRonqvvCASWa0au36BIBQCJHxKx8ZhXM1OofbN793AgH-3A0_kdGBGGG7EvH_hDg"
-  )
+  React.useEffect(() => {
 
-  spotifyApi.getNewReleases().then(
-    function (data) {
-      setAlbumsCards(data.albums.items)
-    },
-    function (err) {
-      console.error(err)
-    }
-  )
+    let spotifyApi = new SpotifyWebApi()
+  
+    spotifyApi.setAccessToken(
+      "BQDjmt0w2NTAQJIGF9weYvWRrHlfMO1mkYLhJQv9kkdlUgDYymg9begx3O8cABoUslaNx5fo4xvGYfyzf5_LyMaB0SOaAE8nDkKBntWuax8JC9dh9YOr_9elZAem78ypkUiAf1DM1K2U3DOnme2qGg"
+    )
+
+    spotifyApi.getUserPlaylists().then(
+      function (data) {
+        setAlbumsCards(data.items)
+      },
+      function (err) {
+        console.error(err)
+      }
+    )
+  }, [])
 
   return (
     <>
@@ -29,9 +33,10 @@ const ListFavorites = () => {
       <section className="o-list-favorites">
         {albumsCards.map(element => (
           <AlbumCard
+            key={element.id}
             imageUrl={element.images[0].url}
             title={element.name}
-            by={element.artists[0].name}
+            by={element.owner.display_name}
           />
         ))}
       </section>

@@ -8,7 +8,7 @@ export default function AlbumnCard({ imageUrl, title, by }) {
       <img className="m-album-card__img" src={imageUrl} alt={title} />
       <Typography variant="p">{title}</Typography>
       <Typography variant="p">
-        <i>By</i> {by}
+        <i>By {by} </i>
       </Typography>
     </div>
   )

@@ -3,7 +3,7 @@ import * as React from "react"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
-import './listNewReleases.scss'
+import "./listNewReleases.scss"
 
 const ListNewReleases = () => {
   let spotifyApi = new SpotifyWebApi()
@@ -29,6 +29,7 @@ const ListNewReleases = () => {
       <section className="o-list-new-releases">
         {albumsCards.map(element => (
           <AlbumCard
+            key={element.id}
             imageUrl={element.images[0].url}
             title={element.name}
             by={element.artists[0].name}
