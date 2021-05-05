@@ -3,14 +3,16 @@ import { Link } from "gatsby"
 
 import Layout from "../components/templates/layout/layout"
 import Seo from "../components/atoms/seo/seo"
-import { Typography } from "../components/atoms/typography/Typography"
+import ListFavorites from "../components/organisms/list-favorites/ListFavorites"
 
-const Favorites = () => (
-  <Layout>
-    <Seo title="Favorites" />
-    <Typography variant="h1">Your Favorites</Typography>
-    <Link to="/">Go Home</Link>
-  </Layout>
-)
+const Favorites = () => {
+  return (
+    <Layout>
+      <Seo title="Favorites" />
+      <ListFavorites />
+      <Link to="/">Go Home</Link>
+    </Layout>
+  )
+}
 
 export default Favorites
