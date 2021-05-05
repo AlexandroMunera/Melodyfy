@@ -6,21 +6,23 @@ import LoginForm from "../components/organisms/login-form/LoginForm"
 import "./login.scss"
 
 const Login = () => {
-  
-  return <Layout>
-    <div className="p-login">
-      <Seo title="Home" />
-      <h1>Hello !</h1>
-      <p>Welcome to your new favorite site.</p>
+  return (
+    <Layout>
+      <div className="p-login">
+        <Seo title="Home" />
+        <h1>Hi there !</h1>
+        <p>Welcome to your new favorite site.</p>
+        
 
-      <LoginForm />
+        <LoginForm />
 
-      {/* <p>
+        {/* <p>
         <Link to="/page-2/">Go to page 2</Link> <br />
         <Link to="/using-typescript/">Go to "Using TypeScript"</Link>
       </p> */}
-    </div>
-  </Layout>
+      </div>
+    </Layout>
+  )
 }
 
 export default Login
