@@ -1,0 +1,11 @@
+.m-Navbar {
+
+  & > ul {
+    list-style-type: none;
+    display: flex;
+    flex-wrap: nowrap;
+    column-gap: 1rem;
+    margin: 0;
+    cursor: pointer;
+  }
+}

@@ -2,7 +2,7 @@ import * as React from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
 
-import Header from "../../molecules/header/header"
+import Header from "../../organisms/header/header"
 import "./layout.scss"
 
 const Layout = ({ children }) => {
