@@ -6,6 +6,6 @@ import "./button.scss"
 //   onClick: Function;
 // };
 
-export const Button = ({ text, onClick }) => (
-  <button type="button" onClick={onClick} className="a-button">{text}</button>
+export const Button = ({ children, onClick }) => (
+  <button type="button" onClick={onClick} className="a-button">{children}</button>
 );

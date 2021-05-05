@@ -1,5 +1,6 @@
 import React from "react"
 import { Button } from "../../atoms/button/Button"
+import { Typography } from "../../atoms/typography/Typography"
 import { FormField } from "../../molecules/form-field/FormField"
 import "./loginForm.scss"
 
@@ -10,15 +11,17 @@ const LoginForm = () => {
 
   return (
     <>
-    <p>Enter with your email</p>
-    <form className="o-login-form">
-      <FormField label="Email" inputType="text" />
-      <FormField label="Password" inputType="password" />
-      <Button text="Sing In" onClick={handleLoginSpotify} />
-    </form>
-    <p>Or use your Spotify account</p>
-    <Button text="Spotify" onClick={handleLoginSpotify} />
+      <Typography variant="p">Enter with your email</Typography>
 
+      <form className="o-login-form">
+        <FormField label="Email" inputType="text" />
+        <FormField label="Password" inputType="password" />
+        <Button onClick={handleLoginSpotify}>Sing In</Button>
+      </form>
+      
+      <Typography variant="p">Or use your Spotify account</Typography>
+
+      <Button onClick={handleLoginSpotify}>Spotify</Button>
     </>
   )
 }
