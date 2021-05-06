@@ -6,12 +6,12 @@ import { Typography } from "../components/atoms/typography/Typography"
 
 const Login = () => {
   return (
-      <div className="p-login">
-        <Seo title="Login" />
-        <Typography variant="h1">Hi there !</Typography>
-        <Typography variant="p">Welcome to your new favorite site.</Typography>
-        <LoginForm />
-      </div>
+    <div className="p-login">
+      <Seo title="Login" />
+      <Typography variant="h1">Hi there !</Typography>
+      <Typography variant="p">Welcome to your new favorite site.</Typography>
+      <LoginForm />
+    </div>
   )
 }
 

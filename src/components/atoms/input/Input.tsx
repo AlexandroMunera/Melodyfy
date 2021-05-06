@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react"
 
 type props = {
-  type: string;
-};
+  type: string
+}
 
-export const Input: React.FC<props> = ({ type }) => <input type={type} />;
+export const Input: React.FC<props> = ({ type }) => <input type={type} />

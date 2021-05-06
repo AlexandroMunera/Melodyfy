@@ -5,11 +5,13 @@ import ListNewReleases from "../components/organisms/list-new-releases/ListNewRe
 import Login from "./Login"
 
 const IndexPage = ({ location }) => {
-  const [tokenSpotify, setTokenSpotify] = useState(
-    localStorage.getItem("tokenSpotify")
-  )
+  const [tokenSpotify, setTokenSpotify] = useState()
 
   useEffect(() => {
+    if (typeof window !== "undefined") {
+      setTokenSpotify(localStorage.getItem("tokenSpotify"))
+    }
+
     if (location.hash !== "") {
       if (location.hash.split("=")[0] === "#access_token") {
         setTokenSpotify(location.hash.split("=")[1])
@@ -24,7 +26,7 @@ const IndexPage = ({ location }) => {
 
       <ListNewReleases />
 
-      <Link to="/Favorites/">Your favorites</Link>
+      <Link to="/favorites/">Your favorites</Link>
     </>
   ) : (
     <Login />

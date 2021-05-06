@@ -5,143 +5,143 @@
  * Class representing the API
  */
 var SpotifyWebApi = (function () {
-  var _baseUri = 'https://api.spotify.com/v1';
-  var _accessToken = null;
-  var _promiseImplementation = null;
+  var _baseUri = "https://api.spotify.com/v1"
+  var _accessToken = null
+  var _promiseImplementation = null
 
   var WrapPromiseWithAbort = function (promise, onAbort) {
-    promise.abort = onAbort;
-    return promise;
-  };
+    promise.abort = onAbort
+    return promise
+  }
 
   var _promiseProvider = function (promiseFunction, onAbort) {
-    var returnedPromise;
+    var returnedPromise
     if (_promiseImplementation !== null) {
-      var deferred = _promiseImplementation.defer();
+      var deferred = _promiseImplementation.defer()
       promiseFunction(
         function (resolvedResult) {
-          deferred.resolve(resolvedResult);
+          deferred.resolve(resolvedResult)
         },
         function (rejectedResult) {
-          deferred.reject(rejectedResult);
+          deferred.reject(rejectedResult)
         }
-      );
-      returnedPromise = deferred.promise;
+      )
+      returnedPromise = deferred.promise
     } else {
       if (window.Promise) {
-        returnedPromise = new window.Promise(promiseFunction);
+        returnedPromise = new window.Promise(promiseFunction)
       }
     }
 
     if (returnedPromise) {
-      return new WrapPromiseWithAbort(returnedPromise, onAbort);
+      return new WrapPromiseWithAbort(returnedPromise, onAbort)
     } else {
-      return null;
+      return null
     }
-  };
+  }
 
   var _extend = function () {
-    var args = Array.prototype.slice.call(arguments);
-    var target = args[0];
-    var objects = args.slice(1);
-    target = target || {};
+    var args = Array.prototype.slice.call(arguments)
+    var target = args[0]
+    var objects = args.slice(1)
+    target = target || {}
     objects.forEach(function (object) {
       for (var j in object) {
         if (object.hasOwnProperty(j)) {
-          target[j] = object[j];
+          target[j] = object[j]
         }
       }
-    });
-    return target;
-  };
+    })
+    return target
+  }
 
   var _buildUrl = function (url, parameters) {
-    var qs = '';
+    var qs = ""
     for (var key in parameters) {
       if (parameters.hasOwnProperty(key)) {
-        var value = parameters[key];
-        qs += encodeURIComponent(key) + '=' + encodeURIComponent(value) + '&';
+        var value = parameters[key]
+        qs += encodeURIComponent(key) + "=" + encodeURIComponent(value) + "&"
       }
     }
     if (qs.length > 0) {
       // chop off last '&'
-      qs = qs.substring(0, qs.length - 1);
-      url = url + '?' + qs;
+      qs = qs.substring(0, qs.length - 1)
+      url = url + "?" + qs
     }
-    return url;
-  };
+    return url
+  }
 
   var _performRequest = function (requestData, callback) {
-    var req = new XMLHttpRequest();
+    var req = new XMLHttpRequest()
 
     var promiseFunction = function (resolve, reject) {
       function success(data) {
         if (resolve) {
-          resolve(data);
+          resolve(data)
         }
         if (callback) {
-          callback(null, data);
+          callback(null, data)
         }
       }
 
       function failure() {
         if (reject) {
-          reject(req);
+          reject(req)
         }
         if (callback) {
-          callback(req, null);
+          callback(req, null)
         }
       }
 
-      var type = requestData.type || 'GET';
-      req.open(type, _buildUrl(requestData.url, requestData.params));
+      var type = requestData.type || "GET"
+      req.open(type, _buildUrl(requestData.url, requestData.params))
       if (_accessToken) {
-        req.setRequestHeader('Authorization', 'Bearer ' + _accessToken);
+        req.setRequestHeader("Authorization", "Bearer " + _accessToken)
       }
 
       req.onreadystatechange = function () {
         if (req.readyState === 4) {
-          var data = null;
+          var data = null
           try {
-            data = req.responseText ? JSON.parse(req.responseText) : '';
+            data = req.responseText ? JSON.parse(req.responseText) : ""
           } catch (e) {
-            console.error(e);
+            console.error(e)
           }
 
           if (req.status >= 200 && req.status < 300) {
-            success(data);
+            success(data)
           } else {
-            failure();
+            failure()
           }
         }
-      };
-
-      if (type === 'GET') {
-        req.send(null);
-      } else {
-        var postData = null;
-        if (requestData.postData) {
-          if (requestData.contentType === 'image/jpeg') {
-            postData = requestData.postData;
-            req.setRequestHeader('Content-Type', requestData.contentType);
-          } else {
-            postData = JSON.stringify(requestData.postData);
-            req.setRequestHeader('Content-Type', 'application/json');
-          }
-        }
-        req.send(postData);
       }
-    };
+
+      if (type === "GET") {
+        req.send(null)
+      } else {
+        var postData = null
+        if (requestData.postData) {
+          if (requestData.contentType === "image/jpeg") {
+            postData = requestData.postData
+            req.setRequestHeader("Content-Type", requestData.contentType)
+          } else {
+            postData = JSON.stringify(requestData.postData)
+            req.setRequestHeader("Content-Type", "application/json")
+          }
+        }
+        req.send(postData)
+      }
+    }
 
     if (callback) {
-      promiseFunction();
-      return null;
+      promiseFunction()
+      return null
     } else {
       return _promiseProvider(promiseFunction, function () {
-        req.abort();
-      });
+        req.abort()
+      })
     }
-  };
+  }
 
   var _checkParamsAndPerformRequest = function (
     requestData,
@@ -149,35 +149,35 @@ var SpotifyWebApi = (function () {
     callback,
     optionsAlwaysExtendParams
   ) {
-    var opt = {};
-    var cb = null;
+    var opt = {}
+    var cb = null
 
-    if (typeof options === 'object') {
-      opt = options;
-      cb = callback;
-    } else if (typeof options === 'function') {
-      cb = options;
+    if (typeof options === "object") {
+      opt = options
+      cb = callback
+    } else if (typeof options === "function") {
+      cb = options
     }
 
     // options extend postData, if any. Otherwise they extend parameters sent in the url
-    var type = requestData.type || 'GET';
-    if (type !== 'GET' && requestData.postData && !optionsAlwaysExtendParams) {
-      requestData.postData = _extend(requestData.postData, opt);
+    var type = requestData.type || "GET"
+    if (type !== "GET" && requestData.postData && !optionsAlwaysExtendParams) {
+      requestData.postData = _extend(requestData.postData, opt)
     } else {
-      requestData.params = _extend(requestData.params, opt);
+      requestData.params = _extend(requestData.params, opt)
     }
-    return _performRequest(requestData, cb);
-  };
+    return _performRequest(requestData, cb)
+  }
 
   /**
    * Creates an instance of the wrapper
    * @constructor
    */
-  var Constr = function () {};
+  var Constr = function () {}
 
   Constr.prototype = {
-    constructor: SpotifyWebApi
-  };
+    constructor: SpotifyWebApi,
+  }
 
   /**
    * Fetches a resource through a generic GET request.
@@ -188,10 +188,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getGeneric = function (url, callback) {
     var requestData = {
-      url: url
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+      url: url,
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Fetches information about the current user.
@@ -205,10 +205,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMe = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches current user's saved tracks.
@@ -222,10 +222,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMySavedTracks = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/tracks'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/tracks",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Adds a list of tracks to the current user's saved tracks.
@@ -241,12 +241,12 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.addToMySavedTracks = function (trackIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/me/tracks',
-      type: 'PUT',
-      postData: trackIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/tracks",
+      type: "PUT",
+      postData: trackIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Remove a list of tracks from the current user's saved tracks.
@@ -266,12 +266,12 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/tracks',
-      type: 'DELETE',
-      postData: trackIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/tracks",
+      type: "DELETE",
+      postData: trackIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Checks if the current user's saved tracks contains a certain list of tracks.
@@ -291,11 +291,11 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/tracks/contains',
-      params: { ids: trackIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/tracks/contains",
+      params: { ids: trackIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get a list of the albums saved in the current Spotify user's "Your Music" library.
@@ -309,10 +309,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMySavedAlbums = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/albums'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/albums",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Save one or more albums to the current user's "Your Music" library.
@@ -328,12 +328,12 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.addToMySavedAlbums = function (albumIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/me/albums',
-      type: 'PUT',
-      postData: albumIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/albums",
+      type: "PUT",
+      postData: albumIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Remove one or more albums from the current user's "Your Music" library.
@@ -353,12 +353,12 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/albums',
-      type: 'DELETE',
-      postData: albumIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/albums",
+      type: "DELETE",
+      postData: albumIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Check if one or more albums is already saved in the current Spotify user's "Your Music" library.
@@ -378,11 +378,11 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/albums/contains',
-      params: { ids: albumIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/albums/contains",
+      params: { ids: albumIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get the current user’s top artists based on calculated affinity.
@@ -396,10 +396,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyTopArtists = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/top/artists'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/top/artists",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get the current user’s top tracks based on calculated affinity.
@@ -413,10 +413,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyTopTracks = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/top/tracks'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/top/tracks",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get tracks from the current user’s recently played tracks.
@@ -430,10 +430,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyRecentlyPlayedTracks = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/player/recently-played'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/player/recently-played",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Adds the current user as a follower of one or more other Spotify users.
@@ -448,15 +448,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.followUsers = function (userIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/',
-      type: 'PUT',
+      url: _baseUri + "/me/following/",
+      type: "PUT",
       params: {
-        ids: userIds.join(','),
-        type: 'user'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: userIds.join(","),
+        type: "user",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Adds the current user as a follower of one or more artists.
@@ -471,15 +471,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.followArtists = function (artistIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/',
-      type: 'PUT',
+      url: _baseUri + "/me/following/",
+      type: "PUT",
       params: {
-        ids: artistIds.join(','),
-        type: 'artist'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: artistIds.join(","),
+        type: "artist",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Add the current user as a follower of one playlist.
@@ -496,13 +496,13 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.followPlaylist = function (playlistId, options, callback) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/followers',
-      type: 'PUT',
-      postData: {}
-    };
+      url: _baseUri + "/playlists/" + playlistId + "/followers",
+      type: "PUT",
+      postData: {},
+    }
 
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Removes the current user as a follower of one or more other Spotify users.
@@ -517,15 +517,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.unfollowUsers = function (userIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/',
-      type: 'DELETE',
+      url: _baseUri + "/me/following/",
+      type: "DELETE",
       params: {
-        ids: userIds.join(','),
-        type: 'user'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: userIds.join(","),
+        type: "user",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Removes the current user as a follower of one or more artists.
@@ -540,15 +540,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.unfollowArtists = function (artistIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/',
-      type: 'DELETE',
+      url: _baseUri + "/me/following/",
+      type: "DELETE",
       params: {
-        ids: artistIds.join(','),
-        type: 'artist'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: artistIds.join(","),
+        type: "artist",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Remove the current user as a follower of one playlist.
@@ -563,11 +563,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.unfollowPlaylist = function (playlistId, callback) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/followers',
-      type: 'DELETE'
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/followers",
+      type: "DELETE",
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Checks to see if the current user is following one or more other Spotify users.
@@ -583,15 +583,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.isFollowingUsers = function (userIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/contains',
-      type: 'GET',
+      url: _baseUri + "/me/following/contains",
+      type: "GET",
       params: {
-        ids: userIds.join(','),
-        type: 'user'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: userIds.join(","),
+        type: "user",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Checks to see if the current user is following one or more artists.
@@ -607,15 +607,15 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.isFollowingArtists = function (artistIds, callback) {
     var requestData = {
-      url: _baseUri + '/me/following/contains',
-      type: 'GET',
+      url: _baseUri + "/me/following/contains",
+      type: "GET",
       params: {
-        ids: artistIds.join(','),
-        type: 'artist'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: artistIds.join(","),
+        type: "artist",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Check to see if one or more Spotify users are following a specified playlist.
@@ -637,14 +637,14 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/followers/contains',
-      type: 'GET',
+      url: _baseUri + "/playlists/" + playlistId + "/followers/contains",
+      type: "GET",
       params: {
-        ids: userIds.join(',')
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+        ids: userIds.join(","),
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Get the current user's followed artists.
@@ -660,14 +660,14 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getFollowedArtists = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/following',
-      type: 'GET',
+      url: _baseUri + "/me/following",
+      type: "GET",
       params: {
-        type: 'artist'
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+        type: "artist",
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches information about a specific user.
@@ -683,10 +683,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getUser = function (userId, options, callback) {
     var requestData = {
-      url: _baseUri + '/users/' + encodeURIComponent(userId)
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/users/" + encodeURIComponent(userId),
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a list of the current user's playlists.
@@ -702,20 +702,20 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getUserPlaylists = function (userId, options, callback) {
-    var requestData;
-    if (typeof userId === 'string') {
+    var requestData
+    if (typeof userId === "string") {
       requestData = {
-        url: _baseUri + '/users/' + encodeURIComponent(userId) + '/playlists'
-      };
+        url: _baseUri + "/users/" + encodeURIComponent(userId) + "/playlists",
+      }
     } else {
       requestData = {
-        url: _baseUri + '/me/playlists'
-      };
-      callback = options;
-      options = userId;
+        url: _baseUri + "/me/playlists",
+      }
+      callback = options
+      options = userId
     }
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a specific playlist.
@@ -731,10 +731,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getPlaylist = function (playlistId, options, callback) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches the tracks from a specific playlist.
@@ -754,10 +754,10 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Gets the current image associated with a specific playlist.
@@ -772,10 +772,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getPlaylistCoverImage = function (playlistId, callback) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/images'
-    };
-    return _checkParamsAndPerformRequest(requestData, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/images",
+    }
+    return _checkParamsAndPerformRequest(requestData, callback)
+  }
 
   /**
    * Creates a playlist and stores it in the current user's library.
@@ -791,12 +791,12 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.createPlaylist = function (userId, options, callback) {
     var requestData = {
-      url: _baseUri + '/users/' + encodeURIComponent(userId) + '/playlists',
-      type: 'POST',
-      postData: options
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/users/" + encodeURIComponent(userId) + "/playlists",
+      type: "POST",
+      postData: options,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Change a playlist's name and public/private state
@@ -816,12 +816,12 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId,
-      type: 'PUT',
-      postData: data
-    };
-    return _checkParamsAndPerformRequest(requestData, data, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId,
+      type: "PUT",
+      postData: data,
+    }
+    return _checkParamsAndPerformRequest(requestData, data, callback)
+  }
 
   /**
    * Add tracks to a playlist.
@@ -843,14 +843,14 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'POST',
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "POST",
       postData: {
-        uris: uris
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback, true);
-  };
+        uris: uris,
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback, true)
+  }
 
   /**
    * Replace the tracks of a playlist
@@ -870,12 +870,12 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'PUT',
-      postData: { uris: uris }
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "PUT",
+      postData: { uris: uris },
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Reorder tracks in a playlist
@@ -901,16 +901,16 @@ var SpotifyWebApi = (function () {
   ) {
     /* eslint-disable camelcase */
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'PUT',
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "PUT",
       postData: {
         range_start: rangeStart,
-        insert_before: insertBefore
-      }
-    };
+        insert_before: insertBefore,
+      },
+    }
     /* eslint-enable camelcase */
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Remove tracks from a playlist
@@ -932,20 +932,20 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var dataToBeSent = uris.map(function (uri) {
-      if (typeof uri === 'string') {
-        return { uri: uri };
+      if (typeof uri === "string") {
+        return { uri: uri }
       } else {
-        return uri;
+        return uri
       }
-    });
+    })
 
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'DELETE',
-      postData: { tracks: dataToBeSent }
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "DELETE",
+      postData: { tracks: dataToBeSent },
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Remove tracks from a playlist, specifying a snapshot id.
@@ -969,24 +969,24 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var dataToBeSent = uris.map(function (uri) {
-      if (typeof uri === 'string') {
-        return { uri: uri };
+      if (typeof uri === "string") {
+        return { uri: uri }
       } else {
-        return uri;
+        return uri
       }
-    });
+    })
     /* eslint-disable camelcase */
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'DELETE',
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "DELETE",
       postData: {
         tracks: dataToBeSent,
-        snapshot_id: snapshotId
-      }
-    };
+        snapshot_id: snapshotId,
+      },
+    }
     /* eslint-enable camelcase */
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Remove tracks from a playlist, specifying the positions of the tracks to be removed.
@@ -1010,16 +1010,16 @@ var SpotifyWebApi = (function () {
   ) {
     /* eslint-disable camelcase */
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/tracks',
-      type: 'DELETE',
+      url: _baseUri + "/playlists/" + playlistId + "/tracks",
+      type: "DELETE",
       postData: {
         positions: positions,
-        snapshot_id: snapshotId
-      }
-    };
+        snapshot_id: snapshotId,
+      },
+    }
     /* eslint-enable camelcase */
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Upload a custom playlist cover image.
@@ -1039,13 +1039,13 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/playlists/' + playlistId + '/images',
-      type: 'PUT',
-      postData: imageData.replace(/^data:image\/jpeg;base64,/, ''),
-      contentType: 'image/jpeg'
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/playlists/" + playlistId + "/images",
+      type: "PUT",
+      postData: imageData.replace(/^data:image\/jpeg;base64,/, ""),
+      contentType: "image/jpeg",
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Fetches an album from the Spotify catalog.
@@ -1061,10 +1061,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getAlbum = function (albumId, options, callback) {
     var requestData = {
-      url: _baseUri + '/albums/' + albumId
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/albums/" + albumId,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches the tracks of an album from the Spotify catalog.
@@ -1080,10 +1080,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getAlbumTracks = function (albumId, options, callback) {
     var requestData = {
-      url: _baseUri + '/albums/' + albumId + '/tracks'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/albums/" + albumId + "/tracks",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches multiple albums from the Spotify catalog.
@@ -1099,11 +1099,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getAlbums = function (albumIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/albums/',
-      params: { ids: albumIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/albums/",
+      params: { ids: albumIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a track from the Spotify catalog.
@@ -1118,10 +1118,10 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getTrack = function (trackId, options, callback) {
-    var requestData = {};
-    requestData.url = _baseUri + '/tracks/' + trackId;
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    var requestData = {}
+    requestData.url = _baseUri + "/tracks/" + trackId
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches multiple tracks from the Spotify catalog.
@@ -1137,11 +1137,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getTracks = function (trackIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/tracks/',
-      params: { ids: trackIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/tracks/",
+      params: { ids: trackIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches an artist from the Spotify catalog.
@@ -1157,10 +1157,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getArtist = function (artistId, options, callback) {
     var requestData = {
-      url: _baseUri + '/artists/' + artistId
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/artists/" + artistId,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches multiple artists from the Spotify catalog.
@@ -1176,11 +1176,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getArtists = function (artistIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/artists/',
-      params: { ids: artistIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/artists/",
+      params: { ids: artistIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches the albums of an artist from the Spotify catalog.
@@ -1196,10 +1196,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getArtistAlbums = function (artistId, options, callback) {
     var requestData = {
-      url: _baseUri + '/artists/' + artistId + '/albums'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/artists/" + artistId + "/albums",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a list of top tracks of an artist from the Spotify catalog, for a specific country.
@@ -1221,11 +1221,11 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/artists/' + artistId + '/top-tracks',
-      params: { country: countryId }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/artists/" + artistId + "/top-tracks",
+      params: { country: countryId },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a list of artists related with a given one from the Spotify catalog.
@@ -1245,10 +1245,10 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/artists/' + artistId + '/related-artists'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/artists/" + artistId + "/related-artists",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a list of Spotify featured playlists (shown, for example, on a Spotify player's "Browse" tab).
@@ -1262,10 +1262,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getFeaturedPlaylists = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/browse/featured-playlists'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/browse/featured-playlists",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a list of new album releases featured in Spotify (shown, for example, on a Spotify player's "Browse" tab).
@@ -1279,10 +1279,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getNewReleases = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/browse/new-releases'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/browse/new-releases",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get a list of categories used to tag items in Spotify (on, for example, the Spotify player's "Browse" tab).
@@ -1296,10 +1296,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getCategories = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/browse/categories'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/browse/categories",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get a single category used to tag items in Spotify (on, for example, the Spotify player's "Browse" tab).
@@ -1314,10 +1314,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getCategory = function (categoryId, options, callback) {
     var requestData = {
-      url: _baseUri + '/browse/categories/' + categoryId
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/browse/categories/" + categoryId,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get a list of Spotify playlists tagged with a particular category.
@@ -1336,10 +1336,10 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/browse/categories/' + categoryId + '/playlists'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/browse/categories/" + categoryId + "/playlists",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get Spotify catalog information about artists, albums, tracks or playlists that match a keyword string.
@@ -1356,14 +1356,14 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.search = function (query, types, options, callback) {
     var requestData = {
-      url: _baseUri + '/search/',
+      url: _baseUri + "/search/",
       params: {
         q: query,
-        type: types.join(',')
-      }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+        type: types.join(","),
+      },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches albums from the Spotify catalog according to a query.
@@ -1377,8 +1377,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchAlbums = function (query, options, callback) {
-    return this.search(query, ['album'], options, callback);
-  };
+    return this.search(query, ["album"], options, callback)
+  }
 
   /**
    * Fetches artists from the Spotify catalog according to a query.
@@ -1392,8 +1392,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchArtists = function (query, options, callback) {
-    return this.search(query, ['artist'], options, callback);
-  };
+    return this.search(query, ["artist"], options, callback)
+  }
 
   /**
    * Fetches tracks from the Spotify catalog according to a query.
@@ -1407,8 +1407,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchTracks = function (query, options, callback) {
-    return this.search(query, ['track'], options, callback);
-  };
+    return this.search(query, ["track"], options, callback)
+  }
 
   /**
    * Fetches playlists from the Spotify catalog according to a query.
@@ -1422,8 +1422,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchPlaylists = function (query, options, callback) {
-    return this.search(query, ['playlist'], options, callback);
-  };
+    return this.search(query, ["playlist"], options, callback)
+  }
 
   /**
    * Fetches shows from the Spotify catalog according to a query.
@@ -1437,8 +1437,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchShows = function (query, options, callback) {
-    return this.search(query, ['show'], options, callback);
-  };
+    return this.search(query, ["show"], options, callback)
+  }
 
   /**
    * Fetches episodes from the Spotify catalog according to a query.
@@ -1452,8 +1452,8 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.searchEpisodes = function (query, options, callback) {
-    return this.search(query, ['episode'], options, callback);
-  };
+    return this.search(query, ["episode"], options, callback)
+  }
 
   /**
    * Get audio features for a single track identified by its unique Spotify ID.
@@ -1467,10 +1467,10 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getAudioFeaturesForTrack = function (trackId, callback) {
-    var requestData = {};
-    requestData.url = _baseUri + '/audio-features/' + trackId;
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+    var requestData = {}
+    requestData.url = _baseUri + "/audio-features/" + trackId
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Get audio features for multiple tracks based on their Spotify IDs.
@@ -1485,11 +1485,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getAudioFeaturesForTracks = function (trackIds, callback) {
     var requestData = {
-      url: _baseUri + '/audio-features',
-      params: { ids: trackIds }
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/audio-features",
+      params: { ids: trackIds },
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Get audio analysis for a single track identified by its unique Spotify ID.
@@ -1503,10 +1503,10 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getAudioAnalysisForTrack = function (trackId, callback) {
-    var requestData = {};
-    requestData.url = _baseUri + '/audio-analysis/' + trackId;
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+    var requestData = {}
+    requestData.url = _baseUri + "/audio-analysis/" + trackId
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Create a playlist-style listening experience based on seed artists, tracks and genres.
@@ -1520,10 +1520,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getRecommendations = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/recommendations'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/recommendations",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Retrieve a list of available genres seed parameter values for recommendations.
@@ -1536,10 +1536,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getAvailableGenreSeeds = function (callback) {
     var requestData = {
-      url: _baseUri + '/recommendations/available-genre-seeds'
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/recommendations/available-genre-seeds",
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Get information about a user’s available devices.
@@ -1552,10 +1552,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyDevices = function (callback) {
     var requestData = {
-      url: _baseUri + '/me/player/devices'
-    };
-    return _checkParamsAndPerformRequest(requestData, {}, callback);
-  };
+      url: _baseUri + "/me/player/devices",
+    }
+    return _checkParamsAndPerformRequest(requestData, {}, callback)
+  }
 
   /**
    * Get information about the user’s current playback state, including track, track progress, and active device.
@@ -1569,10 +1569,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyCurrentPlaybackState = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/player'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/player",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Get the object currently being played on the user’s Spotify account.
@@ -1586,10 +1586,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMyCurrentPlayingTrack = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/player/currently-playing'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/player/currently-playing",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Transfer playback to a new device and determine if it should start playing.
@@ -1607,15 +1607,15 @@ var SpotifyWebApi = (function () {
     options,
     callback
   ) {
-    var postData = options || {};
-    postData.device_ids = deviceIds;
+    var postData = options || {}
+    postData.device_ids = deviceIds
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player',
-      postData: postData
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player",
+      postData: postData,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Play a track on the user's active device
@@ -1628,26 +1628,26 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.play = function (options, callback) {
-    options = options || {};
+    options = options || {}
     var params =
-      'device_id' in options ? { device_id: options.device_id } : null;
-    var postData = {};
-    ['context_uri', 'uris', 'offset', 'position_ms'].forEach(function (field) {
+      "device_id" in options ? { device_id: options.device_id } : null
+    var postData = {}
+    ;["context_uri", "uris", "offset", "position_ms"].forEach(function (field) {
       if (field in options) {
-        postData[field] = options[field];
+        postData[field] = options[field]
       }
-    });
+    })
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/play',
+      type: "PUT",
+      url: _baseUri + "/me/player/play",
       params: params,
-      postData: postData
-    };
+      postData: postData,
+    }
 
     // need to clear options so it doesn't add all of them to the query params
-    var newOptions = typeof options === 'function' ? options : {};
-    return _checkParamsAndPerformRequest(requestData, newOptions, callback);
-  };
+    var newOptions = typeof options === "function" ? options : {}
+    return _checkParamsAndPerformRequest(requestData, newOptions, callback)
+  }
 
   /**
    * Add an item to the end of the user’s current playback queue.
@@ -1660,18 +1660,18 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.queue = function (uri, options, callback) {
-    options = options || {};
+    options = options || {}
     var params =
-      'device_id' in options
+      "device_id" in options
         ? { uri: uri, device_id: options.device_id }
-        : { uri: uri };
+        : { uri: uri }
     var requestData = {
-      type: 'POST',
-      url: _baseUri + '/me/player/queue',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "POST",
+      url: _baseUri + "/me/player/queue",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Pause playback on the user’s account.
@@ -1684,16 +1684,16 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.pause = function (options, callback) {
-    options = options || {};
+    options = options || {}
     var params =
-      'device_id' in options ? { device_id: options.device_id } : null;
+      "device_id" in options ? { device_id: options.device_id } : null
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/pause',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player/pause",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Skips to next track in the user’s queue.
@@ -1706,16 +1706,16 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.skipToNext = function (options, callback) {
-    options = options || {};
+    options = options || {}
     var params =
-      'device_id' in options ? { device_id: options.device_id } : null;
+      "device_id" in options ? { device_id: options.device_id } : null
     var requestData = {
-      type: 'POST',
-      url: _baseUri + '/me/player/next',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "POST",
+      url: _baseUri + "/me/player/next",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Skips to previous track in the user’s queue.
@@ -1730,16 +1730,16 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.skipToPrevious = function (options, callback) {
-    options = options || {};
+    options = options || {}
     var params =
-      'device_id' in options ? { device_id: options.device_id } : null;
+      "device_id" in options ? { device_id: options.device_id } : null
     var requestData = {
-      type: 'POST',
-      url: _baseUri + '/me/player/previous',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "POST",
+      url: _baseUri + "/me/player/previous",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Seeks to the given position in the user’s currently playing track.
@@ -1753,20 +1753,20 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.seek = function (position_ms, options, callback) {
-    options = options || {};
+    options = options || {}
     var params = {
-      position_ms: position_ms
-    };
-    if ('device_id' in options) {
-      params.device_id = options.device_id;
+      position_ms: position_ms,
+    }
+    if ("device_id" in options) {
+      params.device_id = options.device_id
     }
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/seek',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player/seek",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Set the repeat mode for the user’s playback. Options are repeat-track, repeat-context, and off.
@@ -1780,20 +1780,20 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.setRepeat = function (state, options, callback) {
-    options = options || {};
+    options = options || {}
     var params = {
-      state: state
-    };
-    if ('device_id' in options) {
-      params.device_id = options.device_id;
+      state: state,
+    }
+    if ("device_id" in options) {
+      params.device_id = options.device_id
     }
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/repeat',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player/repeat",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Set the volume for the user’s current playback device.
@@ -1807,20 +1807,20 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.setVolume = function (volume_percent, options, callback) {
-    options = options || {};
+    options = options || {}
     var params = {
-      volume_percent: volume_percent
-    };
-    if ('device_id' in options) {
-      params.device_id = options.device_id;
+      volume_percent: volume_percent,
+    }
+    if ("device_id" in options) {
+      params.device_id = options.device_id
     }
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/volume',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player/volume",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Toggle shuffle on or off for user’s playback.
@@ -1834,20 +1834,20 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.setShuffle = function (state, options, callback) {
-    options = options || {};
+    options = options || {}
     var params = {
-      state: state
-    };
-    if ('device_id' in options) {
-      params.device_id = options.device_id;
+      state: state,
+    }
+    if ("device_id" in options) {
+      params.device_id = options.device_id
     }
     var requestData = {
-      type: 'PUT',
-      url: _baseUri + '/me/player/shuffle',
-      params: params
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      type: "PUT",
+      url: _baseUri + "/me/player/shuffle",
+      params: params,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches a show from the Spotify catalog.
@@ -1862,10 +1862,10 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getShow = function (showId, options, callback) {
-    var requestData = {};
-    requestData.url = _baseUri + '/shows/' + showId;
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    var requestData = {}
+    requestData.url = _baseUri + "/shows/" + showId
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches multiple shows from the Spotify catalog.
@@ -1881,11 +1881,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getShows = function (showIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/shows/',
-      params: { ids: showIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/shows/",
+      params: { ids: showIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches current user's saved shows.
@@ -1899,10 +1899,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getMySavedShows = function (options, callback) {
     var requestData = {
-      url: _baseUri + '/me/shows'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/shows",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Adds a list of shows to the current user's saved shows.
@@ -1918,12 +1918,12 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.addToMySavedShows = function (showIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/me/shows',
-      type: 'PUT',
-      postData: showIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/shows",
+      type: "PUT",
+      postData: showIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Remove a list of shows from the current user's saved shows.
@@ -1943,12 +1943,12 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/shows',
-      type: 'DELETE',
-      postData: showIds
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/shows",
+      type: "DELETE",
+      postData: showIds,
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Checks if the current user's saved shows contains a certain list of shows.
@@ -1968,11 +1968,11 @@ var SpotifyWebApi = (function () {
     callback
   ) {
     var requestData = {
-      url: _baseUri + '/me/shows/contains',
-      params: { ids: showIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/me/shows/contains",
+      params: { ids: showIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches the episodes of a show from the Spotify catalog.
@@ -1988,10 +1988,10 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getShowEpisodes = function (showId, options, callback) {
     var requestData = {
-      url: _baseUri + '/shows/' + showId + '/episodes'
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/shows/" + showId + "/episodes",
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches an episode from the Spotify catalog.
@@ -2006,10 +2006,10 @@ var SpotifyWebApi = (function () {
    * @return {Object} Null if a callback is provided, a `Promise` object otherwise
    */
   Constr.prototype.getEpisode = function (episodeId, options, callback) {
-    var requestData = {};
-    requestData.url = _baseUri + '/episodes/' + episodeId;
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+    var requestData = {}
+    requestData.url = _baseUri + "/episodes/" + episodeId
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Fetches multiple episodes from the Spotify catalog.
@@ -2025,11 +2025,11 @@ var SpotifyWebApi = (function () {
    */
   Constr.prototype.getEpisodes = function (episodeIds, options, callback) {
     var requestData = {
-      url: _baseUri + '/episodes/',
-      params: { ids: episodeIds.join(',') }
-    };
-    return _checkParamsAndPerformRequest(requestData, options, callback);
-  };
+      url: _baseUri + "/episodes/",
+      params: { ids: episodeIds.join(",") },
+    }
+    return _checkParamsAndPerformRequest(requestData, options, callback)
+  }
 
   /**
    * Gets the access token in use.
@@ -2037,8 +2037,8 @@ var SpotifyWebApi = (function () {
    * @return {string} accessToken The access token
    */
   Constr.prototype.getAccessToken = function () {
-    return _accessToken;
-  };
+    return _accessToken
+  }
 
   /**
    * Sets the access token to be used.
@@ -2049,8 +2049,8 @@ var SpotifyWebApi = (function () {
    * @return {void}
    */
   Constr.prototype.setAccessToken = function (accessToken) {
-    _accessToken = accessToken;
-  };
+    _accessToken = accessToken
+  }
 
   /**
    * Sets an implementation of Promises/A+ to be used. E.g. Q, when.
@@ -2062,27 +2062,27 @@ var SpotifyWebApi = (function () {
    * @return {void}
    */
   Constr.prototype.setPromiseImplementation = function (PromiseImplementation) {
-    var valid = false;
+    var valid = false
     try {
       var p = new PromiseImplementation(function (resolve) {
-        resolve();
-      });
-      if (typeof p.then === 'function' && typeof p.catch === 'function') {
-        valid = true;
+        resolve()
+      })
+      if (typeof p.then === "function" && typeof p.catch === "function") {
+        valid = true
       }
     } catch (e) {
-      console.error(e);
+      console.error(e)
     }
     if (valid) {
-      _promiseImplementation = PromiseImplementation;
+      _promiseImplementation = PromiseImplementation
     } else {
-      throw new Error('Unsupported implementation of Promises/A+');
+      throw new Error("Unsupported implementation of Promises/A+")
     }
-  };
+  }
 
-  return Constr;
-})();
+  return Constr
+})()
 
-if (typeof module === 'object' && typeof module.exports === 'object') {
-  module.exports = SpotifyWebApi;
+if (typeof module === "object" && typeof module.exports === "object") {
+  module.exports = SpotifyWebApi
 }

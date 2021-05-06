@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react"
 import "./button.scss"
 
 // type ButtonProps = {
@@ -7,5 +7,7 @@ import "./button.scss"
 // };
 
 export const Button = ({ children, onClick }) => (
-  <button type="button" onClick={onClick} className="a-button">{children}</button>
-);
+  <button type="button" onClick={onClick} className="a-button">
+    {children}
+  </button>
+)

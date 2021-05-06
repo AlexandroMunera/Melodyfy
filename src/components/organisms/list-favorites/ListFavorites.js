@@ -7,26 +7,34 @@ import "./listFavorites.scss"
 
 const ListFavorites = () => {
   const [albumsCards, setAlbumsCards] = useState([])
+  const isBrowser = typeof window !== "undefined"
 
   useEffect(() => {
-    if (localStorage.getItem("tokenSpotify") === null) {
-      // Spotify token is required
-      navigate("/")
-    } else {
-      let spotifyApi = new SpotifyWebApi()
+    if (isBrowser) {
+      if (localStorage.getItem("tokenSpotify") === null) {
+        // Spotify token is required
+        navigate("/Login")
+      } else {
+        let spotifyApi = new SpotifyWebApi()
 
-      spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
+        spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
 
-      spotifyApi.getUserPlaylists().then(
-        function (data) {
-          setAlbumsCards(data.items)
-        },
-        function () {
-          navigate("/")
-        }
-      )
+        spotifyApi
+          .getUserPlaylists()
+          .then(
+            function (data) {
+              setAlbumsCards(data.items)
+            },
+            function () {
+              navigate("/Login")
+            }
+          )
+          .catch(function (e) {
+            console.error(e.message) // "oh, no!"
+          })
+      }
     }
-  }, [])
+  }, [isBrowser])
 
   return (
     <>

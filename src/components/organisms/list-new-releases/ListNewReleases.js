@@ -8,25 +8,31 @@ import "./listNewReleases.scss"
 const ListNewReleases = () => {
   const [albumsCards, setAlbumsCards] = useState([])
 
+  const isBrowser = typeof window !== "undefined"
+
   useEffect(() => {
-    if (localStorage.getItem("tokenSpotify") === null) {
-      // Spotify token is required
-      navigate("/")
-    } else {
-      let spotifyApi = new SpotifyWebApi()
 
-      spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
-
-      spotifyApi.getNewReleases().then(
-        function (data) {
-          setAlbumsCards(data.albums.items)
-        },
-        function () {
-          navigate("/")
-        }
-      )
+    if (isBrowser){
+      if (localStorage.getItem("tokenSpotify") === null) {
+        // Spotify token is required
+        navigate("/Login")
+      } else {
+        let spotifyApi = new SpotifyWebApi()
+  
+        spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
+  
+        spotifyApi.getNewReleases().then(
+          function (data) {
+            setAlbumsCards(data.albums.items)
+          },
+          function () {
+            navigate("/Login")
+          }
+        )
+      }
     }
-  }, [])
+    
+  }, [isBrowser])
 
   return (
     <>
