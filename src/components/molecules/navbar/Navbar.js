@@ -1,26 +1,29 @@
 import React from "react"
 import "./navbar.scss"
-import menuIcon from '../../../images/menu.svg';
+import menuIcon from "../../../images/menu.svg"
+import { Link } from "gatsby"
 
 export default function Navbar() {
-
   const onClickMenuIcon = () => {
-    document.getElementById('navbar').classList.toggle('show')
+    document.getElementById("navbar").classList.toggle("show")
   }
 
   return (
-    <div>
+    <>
       <button className="hamburger" onClick={onClickMenuIcon}>
         <img src={menuIcon} alt="menu" />
       </button>
 
       <nav id="navbar" className="m-Navbar">
         <ul>
-          <li>Home</li>
-          <li>Favorites</li>
-          <li>Favorites</li>
+          <li>
+            <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/Favorites">Favorites</Link>
+          </li>
         </ul>
       </nav>
-    </div>
+    </>
   )
 }
