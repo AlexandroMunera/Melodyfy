@@ -6,7 +6,7 @@ import "./loginForm.scss"
 
 const LoginForm = () => {
   const handleLoginSpotify = () => {
-    window.location = `https://accounts.spotify.com/authorize?client_id=3208ccd9ce0244a68e4a2f1d2046fd9f&redirect_uri=https://melodyfy.gatsbyjs.io/?&response_type=token&show_dialog=true`
+    window.location = `https://accounts.spotify.com/authorize?client_id=3208ccd9ce0244a68e4a2f1d2046fd9f&redirect_uri=http://localhost:8000/?&response_type=token&show_dialog=true`
   }
 
   return (

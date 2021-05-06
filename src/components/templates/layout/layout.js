@@ -27,13 +27,6 @@ const Layout = ({ children }) => {
         }}
       >
         <main>{children}</main>
-        <footer
-          style={{
-            marginTop: `2rem`,
-          }}
-        >
-          © {new Date().getFullYear()}, Built with ❤ by Freud Múnera
-        </footer>
       </div>
     </>
   )

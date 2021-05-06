@@ -23,10 +23,7 @@ const IndexPage = ({ location }) => {
   return tokenSpotify !== null ? (
     <>
       <Seo title="Home" />
-
       <ListNewReleases />
-
-      <Link to="/favorites/">Your favorites</Link>
     </>
   ) : (
     <Login />

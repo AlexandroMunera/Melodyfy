@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
 import { navigate } from "gatsby"
+import React, { useEffect, useState } from "react"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
@@ -11,16 +11,15 @@ const ListNewReleases = () => {
   const isBrowser = typeof window !== "undefined"
 
   useEffect(() => {
-
-    if (isBrowser){
+    if (isBrowser) {
       if (localStorage.getItem("tokenSpotify") === null) {
         // Spotify token is required
         navigate("/Login")
       } else {
         let spotifyApi = new SpotifyWebApi()
-  
+
         spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
-  
+
         spotifyApi.getNewReleases().then(
           function (data) {
             setAlbumsCards(data.albums.items)
@@ -31,7 +30,6 @@ const ListNewReleases = () => {
         )
       }
     }
-    
   }, [isBrowser])
 
   return (
