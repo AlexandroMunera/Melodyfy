@@ -1,30 +1,31 @@
-import * as React from "react"
-
+import React, { useState, useEffect } from "react"
+import { navigate } from "gatsby"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
 import "./listFavorites.scss"
 
 const ListFavorites = () => {
- 
-  const [albumsCards, setAlbumsCards] = React.useState([])
+  const [albumsCards, setAlbumsCards] = useState([])
 
-  React.useEffect(() => {
+  useEffect(() => {
+    if (localStorage.getItem("tokenSpotify") === null) {
+      // Spotify token is required
+      navigate("/")
+    } else {
+      let spotifyApi = new SpotifyWebApi()
 
-    let spotifyApi = new SpotifyWebApi()
-  
-    spotifyApi.setAccessToken(
-      "BQB8vH6c0jliwH1-13Kg-Xjo3SK0-txZv-MoGrqdCY7DOj8-UzIkxuHPeCEyumMzgQie2WQQ1FL6eATOnHQQ1wpaKDEt534SFh4ZXFSAAK0UqoRDTbRD6gkd7OKHgDEg4B7CbgImDKKPGvJMGQBdqg"
-    )
+      spotifyApi.setAccessToken(localStorage.getItem("tokenSpotify"))
 
-    spotifyApi.getUserPlaylists().then(
-      function (data) {
-        setAlbumsCards(data.items)
-      },
-      function (err) {
-        console.error(err)
-      }
-    )
+      spotifyApi.getUserPlaylists().then(
+        function (data) {
+          setAlbumsCards(data.items)
+        },
+        function () {
+          navigate("/")
+        }
+      )
+    }
   }, [])
 
   return (
