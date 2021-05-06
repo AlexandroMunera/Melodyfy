@@ -14,7 +14,7 @@ const ListFavorites = () => {
     let spotifyApi = new SpotifyWebApi()
   
     spotifyApi.setAccessToken(
-      "BQDjmt0w2NTAQJIGF9weYvWRrHlfMO1mkYLhJQv9kkdlUgDYymg9begx3O8cABoUslaNx5fo4xvGYfyzf5_LyMaB0SOaAE8nDkKBntWuax8JC9dh9YOr_9elZAem78ypkUiAf1DM1K2U3DOnme2qGg"
+      "BQB8vH6c0jliwH1-13Kg-Xjo3SK0-txZv-MoGrqdCY7DOj8-UzIkxuHPeCEyumMzgQie2WQQ1FL6eATOnHQQ1wpaKDEt534SFh4ZXFSAAK0UqoRDTbRD6gkd7OKHgDEg4B7CbgImDKKPGvJMGQBdqg"
     )
 
     spotifyApi.getUserPlaylists().then(

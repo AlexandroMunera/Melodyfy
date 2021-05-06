@@ -11,7 +11,6 @@ const Header = ({ siteTitle }) => (
       <Link to="/" className="o-header__link-home">
         <Typography variant="h1">{siteTitle}</Typography>
       </Link>
-
       <Navbar />
     </div>
   </header>

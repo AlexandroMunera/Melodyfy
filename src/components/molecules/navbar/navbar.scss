@@ -1,11 +1,45 @@
 .m-Navbar {
+  display: flex;
+  flex-wrap: wrap;
 
   & > ul {
     list-style-type: none;
     display: flex;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     column-gap: 1rem;
     margin: 0;
     cursor: pointer;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+.m-Navbar.show {  
+  display: flex;
+  width: 100%;
+  margin-top: 1rem;
+
+}
+
+.hamburger {
+  background-color: transparent;
+  display: none;
+  border: 0;
+  cursor: pointer;
+  outline: none;
+  color: white;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  & > img {
+    margin: 0;
   }
 }
