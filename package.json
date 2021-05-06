@@ -1,7 +1,7 @@
 {
   "name": "melodyfy",
   "private": true,
-  "description": "Find amazing music",
+  "description": "Your site for find amazing music",
   "version": "0.1.0",
   "author": "Freud Múnera",
   "dependencies": {

@@ -32,7 +32,7 @@ const Layout = ({ children }) => {
             marginTop: `2rem`,
           }}
         >
-          © {new Date().getFullYear()}, Built by Freud Múnera
+          © {new Date().getFullYear()}, Built with ❤ by Freud Múnera
         </footer>
       </div>
     </>
