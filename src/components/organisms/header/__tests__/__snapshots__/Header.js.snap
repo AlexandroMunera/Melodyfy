@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Header renders correctly 1`] = `
+<header
+  className="o-header"
+>
+  <div
+    className="o-header__container"
+  >
+    <a
+      className="o-header__link-home"
+      href="/"
+    >
+      <h1>
+        Default Starter
+      </h1>
+    </a>
+    <button
+      className="hamburger"
+      onClick={[Function]}
+    >
+      <img
+        alt="menu"
+        src="test-file-stub"
+      />
+    </button>
+    <nav
+      className="m-Navbar"
+      id="navbar"
+    >
+      <ul>
+        <li>
+          <a
+            href="/"
+          >
+            Home
+          </a>
+        </li>
+        <li>
+          <a
+            href="/Favorites"
+          >
+            Favorites
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>
+`;
