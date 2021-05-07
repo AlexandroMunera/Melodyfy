@@ -30,10 +30,10 @@ module.exports = {
     },
     `gatsby-plugin-gatsby-cloud`,
     {
-      resolve: 'gatsby-plugin-sass',
+      resolve: "gatsby-plugin-sass",
       options: {
         additionalData: `@use "src/styles/variables" as var;`,
-      }
+      },
     },
     {
       resolve: `gatsby-plugin-typography`,

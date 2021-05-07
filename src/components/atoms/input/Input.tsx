@@ -4,4 +4,4 @@ type props = {
   type: string
 }
 
-export const Input: React.FC<props> = ({ type }) => <input type={type} />
+export const Input: React.FC<props> = ({ type }) => <input required type={type} />

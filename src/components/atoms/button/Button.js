@@ -6,8 +6,8 @@ import * as styles from "./button.module.scss"
 //   onClick: Function;
 // };
 
-export const Button = ({ children, onClick }) => (
-  <button type="button" onClick={onClick} className= {styles.button}>
+export const Button = ({ type, children, onClick }) => (
+  <button type={type} onClick={onClick} className= {styles.button}>
     {children}
   </button>
 )
