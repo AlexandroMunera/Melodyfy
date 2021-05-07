@@ -1,8 +1,6 @@
-import { Link } from "gatsby"
 import React, { useEffect, useState } from "react"
 import Seo from "../components/atoms/seo/seo"
 import ListNewReleases from "../components/organisms/list-new-releases/ListNewReleases"
-import Layout from "../components/templates/layout/Layout"
 import Login from "./Login"
 
 const IndexPage = ({ location }) => {
@@ -22,10 +20,10 @@ const IndexPage = ({ location }) => {
   }, [location.hash])
 
   return tokenSpotify !== null ? (
-    <Layout>
+    <>
       <Seo title="Home" />
       <ListNewReleases />
-    </Layout>
+    </>
   ) : (
     <Login />
   )
