@@ -1,14 +1,14 @@
 import * as React from "react"
 import PropTypes from "prop-types"
 import { Link } from "gatsby"
-import "./header.scss"
+import * as styles from "./header.module.scss"
 import { Typography } from "../../atoms/typography/Typography"
 import Navbar from "../../molecules/navbar/navbar"
 
 const Header = ({ siteTitle }) => (
-  <header className="o-header">
-    <div className="o-header__container">
-      <Link to="/" className="o-header__link-home">
+  <header className={styles.header}>
+    <div className={styles.header__container}>
+      <Link to="/" className={styles.header__link}>
         <Typography variant="h1">{siteTitle}</Typography>
       </Link>
       <Navbar />

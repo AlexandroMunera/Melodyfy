@@ -1,4 +1,4 @@
-.o-header {
+.header {
   background-color: rebeccapurple;
   margin-bottom: 1.45rem;
   color: white;
@@ -12,7 +12,7 @@
     justify-content: space-between;
   }
 
-  &__link-home {
+  &__link {
     text-decoration: none;
     color: inherit;
 

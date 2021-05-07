@@ -2,7 +2,7 @@ import React from "react"
 import { Button } from "../../atoms/button/Button"
 import { Typography } from "../../atoms/typography/Typography"
 import { FormField } from "../../molecules/form-field/FormField"
-import "./loginForm.scss"
+import * as styles from "./loginForm.module.scss"
 
 const LoginForm = () => {
   const handleLoginSpotify = () => {
@@ -13,7 +13,7 @@ const LoginForm = () => {
     <>
       <Typography variant="p">Enter with your email</Typography>
 
-      <form className="o-login-form">
+      <form className={styles.form}>
         <FormField label="Email" inputType="text" />
         <FormField label="Password" inputType="password" />
         <Button onClick={handleLoginSpotify}>Sing In</Button>

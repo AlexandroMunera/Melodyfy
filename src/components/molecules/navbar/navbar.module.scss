@@ -1,4 +1,4 @@
-.m-Navbar {
+.navbar {
   display: flex;
   flex-wrap: wrap;
 
@@ -24,7 +24,7 @@
   }
 }
 
-.m-Navbar.show {
+.navbar.show {
   display: flex;
 
   margin-top: 1rem;

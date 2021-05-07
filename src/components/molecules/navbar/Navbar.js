@@ -1,5 +1,5 @@
 import React from "react"
-import "./navbar.scss"
+import * as styles from "./navbar.module.scss"
 import menuIcon from "../../../images/menu.svg"
 import { Link } from "gatsby"
 
@@ -10,17 +10,17 @@ export default function Navbar() {
 
   return (
     <>
-      <button className="hamburger" onClick={onClickMenuIcon}>
+      <button className={styles.hamburger} onClick={onClickMenuIcon}>
         <img src={menuIcon} alt="menu" />
       </button>
 
-      <nav id="navbar" className="m-Navbar">
+      <nav id="navbar" className={styles.navbar}>
         <ul>
           <li>
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/favorites">Favorites</Link>
+            <Link to="/Favorites">Favorites</Link>
           </li>
         </ul>
       </nav>

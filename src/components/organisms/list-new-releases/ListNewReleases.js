@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
-import "./listNewReleases.scss"
+import * as styles from "./listNewReleases.module.scss"
 
 const ListNewReleases = () => {
   const [albumsCards, setAlbumsCards] = useState([])
@@ -35,7 +35,7 @@ const ListNewReleases = () => {
   return (
     <>
       <Typography variant="h2">New Releases</Typography>
-      <section className="o-list-new-releases">
+      <section className={styles.releases}>
         {albumsCards.map(element => (
           <AlbumCard
             key={element.id}

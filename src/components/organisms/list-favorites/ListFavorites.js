@@ -3,7 +3,7 @@ import { navigate } from "gatsby"
 import SpotifyWebApi from "../../../services/spotify-web-api.js"
 import { Typography } from "../../atoms/typography/Typography"
 import AlbumCard from "../../molecules/albumn-card/AlbumCard.js"
-import "./listFavorites.scss"
+import * as styles from "./listFavorites.module.scss"
 
 const ListFavorites = () => {
   const [albumsCards, setAlbumsCards] = useState([])
@@ -39,7 +39,7 @@ const ListFavorites = () => {
   return (
     <>
       <Typography variant="h2">My Favorites</Typography>
-      <section className="o-list-favorites">
+      <section className= {styles.list}>
         {albumsCards.map(element => (
           <AlbumCard
             key={element.id}
