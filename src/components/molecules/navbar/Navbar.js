@@ -5,7 +5,8 @@ import { Link } from "gatsby"
 
 export default function Navbar() {
   const onClickMenuIcon = () => {
-    document.getElementById("navbar").classList.toggle("show")
+    console.log('click ')
+    document.getElementById("navbar").classList.toggle(styles.showNavbar)
   }
 
   return (
@@ -18,6 +19,9 @@ export default function Navbar() {
         <ul>
           <li>
             <Link to="/">Home</Link>
+          </li>
+          <li>
+            <Link to="/Favorites">Favorites</Link>
           </li>
           <li>
             <Link to="/Favorites">Favorites</Link>
