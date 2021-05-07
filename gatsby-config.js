@@ -32,7 +32,7 @@ module.exports = {
     {
       resolve: 'gatsby-plugin-sass',
       options: {
-        additionalData: `@use "src/styles/general";`,
+        additionalData: `@use "src/styles/variables" as var;`,
       }
     },
     {

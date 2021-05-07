@@ -1,5 +1,5 @@
 import React from "react"
-import "./button.module.scss"
+import * as styles from "./button.module.scss"
 
 // type ButtonProps = {
 //   text: string;
@@ -7,7 +7,7 @@ import "./button.module.scss"
 // };
 
 export const Button = ({ children, onClick }) => (
-  <button type="button" onClick={onClick} className="a-button">
+  <button type="button" onClick={onClick} className= {styles.button}>
     {children}
   </button>
 )

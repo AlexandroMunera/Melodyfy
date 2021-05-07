@@ -1,3 +1,5 @@
+import "./src/styles/general.scss"
+
 import React from "react"
 import Layout from "./src/components/templates/layout/Layout"
 
