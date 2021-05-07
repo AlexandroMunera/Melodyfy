@@ -29,7 +29,12 @@ module.exports = {
       },
     },
     `gatsby-plugin-gatsby-cloud`,
-    "gatsby-plugin-sass",
+    {
+      resolve: 'gatsby-plugin-sass',
+      options: {
+        additionalData: `@use "src/styles/general";`,
+      }
+    },
     {
       resolve: `gatsby-plugin-typography`,
       options: {
