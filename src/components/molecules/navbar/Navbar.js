@@ -43,7 +43,7 @@ export default function Navbar() {
           console.error(e.message)
         })
     }
-  }, [localStorage, isBrowser])
+  }, [])
 
   return (
     <>
